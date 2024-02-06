@@ -1,11 +1,9 @@
-import { View, Text } from "react-native";
-import { Feather } from "@expo/vector-icons";
-import { useLocalSearchParams, Stack } from "expo-router";
-import { gql, useQuery } from "@apollo/client";
+import { View, Text, ToastAndroid } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useLocalSearchParams, Stack, useRouter } from "expo-router";
+import { gql, useQuery, useMutation } from "@apollo/client";
 import client from "../../../graphql/client";
-import { ActivityIndicator, MD2Colors } from "react-native-paper";
-import { useState } from "react";
-import Actions from "../../../components/actions";
+import { ActivityIndicator } from "react-native-paper";
 
 const TODO_QUERY = gql`
   query todos {
@@ -19,27 +17,43 @@ const TODO_QUERY = gql`
   }
 `;
 
+const DELETE_TODO = gql`
+  mutation DeleteTodo($id: String!) {
+    deleteTodo(id: $id) {
+      message
+    }
+  }
+`;
+
 export default function Details() {
   const { id } = useLocalSearchParams();
+  const router = useRouter();
   const { data, loading, error } = useQuery(TODO_QUERY, { client });
-  const [menu, setMenu] = useState(false);
+
+  const [
+    deleteTodo,
+    { data: deletedData, loading: loadedData, error: loadingError },
+  ] = useMutation(DELETE_TODO, {
+    client,
+  });
 
   if (loading)
     return (
       <Text>
-        <ActivityIndicator animating={true} color={MD2Colors.red800} />
+        <ActivityIndicator animating={true} />
         Loading...
       </Text>
     );
+
+  if (loadedData) {
+    ToastAndroid.show("Task Deleted Successfully!", ToastAndroid.LONG);
+    router.back();
+  }
   if (error) return <Text>Error: {error.message}</Text>;
 
   const selectedTask = data.todos.find((task: any) => task.id === id);
 
   if (!selectedTask) return <Text>Task not found</Text>;
-
-  const handleToggle = () => {
-    setMenu(!menu);
-  };
 
   return (
     <View
@@ -56,16 +70,32 @@ export default function Details() {
         options={{
           headerTitle: selectedTask.title,
           headerRight: () => (
-            <Feather
-              name="more-vertical"
-              size={24}
-              color="white"
-              onPress={handleToggle}
-            />
+            <View style={{ flexDirection: "row", gap: 12 }}>
+              <MaterialIcons
+                name="update"
+                size={24}
+                color="white"
+                onPress={() => router.push(`./updateTodo/${id}`)}
+              />
+              <MaterialIcons
+                name="delete"
+                size={24}
+                color="white"
+                onPress={() =>
+                  deleteTodo({
+                    variables: {
+                      id: selectedTask.id,
+                    },
+                    onError(error) {
+                      console.log("On Press: ", error);
+                    },
+                  })
+                }
+              />
+            </View>
           ),
         }}
       />
-      {menu && <Actions />}
       <Text
         style={{
           fontSize: 12,

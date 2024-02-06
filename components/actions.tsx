@@ -2,8 +2,9 @@ import { useRouter } from "expo-router";
 import * as React from "react";
 import { View } from "react-native";
 import { Button, Menu, Divider } from "react-native-paper";
+import client from "../graphql/client";
 
-const Actions = () => {
+const Actions = ({ updateUrl }: any) => {
   const [visible, setVisible] = React.useState(false);
   const router = useRouter();
 
@@ -21,7 +22,7 @@ const Actions = () => {
     >
       <Menu.Item
         leadingIcon="update"
-        // onPress={() => router.push("../app/(pages)/todo/updateTask")}
+        onPress={() => router.push(`../../todo/updateTodo/${updateUrl}`)}
         title="Update Task"
       />
       <Menu.Item leadingIcon="delete" onPress={() => {}} title="Delete Task" />

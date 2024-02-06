@@ -12,6 +12,10 @@ export default function App() {
     "Gilroy-Bold": require("../assets/fonts/Gilroy-Bold.ttf"),
     "Gilroy-SemiBold": require("../assets/fonts/Gilroy-SemiBold.ttf"),
     "Gilroy-Medium": require("../assets/fonts/Gilroy-Medium.ttf"),
+    "Gilroy-Regular": require("../assets/fonts/Gilroy-Regular.ttf"),
+    "Gilroy-Light": require("../assets/fonts/Gilroy-Light.ttf"),
+    "Gilroy-ExtraBold": require("../assets/fonts/Gilroy-ExtraBold.ttf"),
+    "Gilroy-Black": require("../assets/fonts/Gilroy-Black.ttf"),
   });
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {

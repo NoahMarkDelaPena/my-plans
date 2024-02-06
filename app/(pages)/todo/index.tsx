@@ -5,14 +5,15 @@ import {
   StatusBar,
   StyleSheet,
   Pressable,
+  RefreshControl,
 } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Avatar, Checkbox, FAB } from "react-native-paper";
+import { Avatar, FAB } from "react-native-paper";
 import { useRouter, Stack } from "expo-router";
-import { tasks } from "../../../constants/todo";
 import { useState } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, ApolloQueryResult } from "@apollo/client";
 import client from "../../../graphql/client";
+import { useCallback, useRef } from "react";
 
 const TODO_QUERY = gql`
   query todos {
@@ -52,15 +53,31 @@ function getFormattedDate() {
 
 export default function Home() {
   const [checked, setChecked] = useState(false);
+
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(getFormattedDate());
-
-  const { data, loading, error } = useQuery(TODO_QUERY, { client });
+  const refetchFunction = useRef<
+    (() => Promise<ApolloQueryResult<any>>) | null
+  >(null);
+  const { data, loading, error, refetch } = useQuery(TODO_QUERY, { client });
   const totalTasks = data.todos.length;
+  refetchFunction.current = refetch;
+  // console.log(data);
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+      refetchFunction.current && refetchFunction.current();
+    }, 2000);
+  }, []);
 
   if (loading) {
     return (
       <View style={styles.container}>
+        <Stack.Screen options={{ headerShown: false }} />
         <Text style={styles.infoText}>Loading...</Text>
       </View>
     );
@@ -131,6 +148,9 @@ export default function Home() {
             </Pressable>
           )}
           keyExtractor={(item) => item.id}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
       </View>
       <FAB
@@ -143,6 +163,7 @@ export default function Home() {
           bottom: 0,
           backgroundColor: "white",
         }}
+        onPress={() => router.push("../todo/addTodo")}
       />
     </SafeAreaProvider>
   );

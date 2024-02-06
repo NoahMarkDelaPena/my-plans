@@ -31,13 +31,13 @@
       [
         "expo-font",
         {
-          "Regular": ["../assets/fonts/Gilroy-Regular.ttf"],
-          "Light": ["../assets/fonts/Gilroy-Light.ttf"],
-          "Medium": ["../assets/fonts/Gilroy-Medium.ttf"],
-          "SemiBold": ["../assets/fonts/Gilroy-SemiBold.ttf"],
-          "Bold": ["../assets/fonts/Gilroy-Bold.ttf"],
-          "ExtraBold": ["../assets/fonts/Gilroy-ExtraBold.ttf"],
-          "Black": ["../assets/fonts/Gilroy-Black.ttf"]
+          "Regular": ["./assets/fonts/Gilroy-Regular.ttf"],
+          "Light": ["./assets/fonts/Gilroy-Light.ttf"],
+          "Medium": ["./assets/fonts/Gilroy-Medium.ttf"],
+          "SemiBold": ["./assets/fonts/Gilroy-SemiBold.ttf"],
+          "Bold": ["./assets/fonts/Gilroy-Bold.ttf"],
+          "ExtraBold": ["./assets/fonts/Gilroy-ExtraBold.ttf"],
+          "Black": ["./assets/fonts/Gilroy-Black.ttf"]
         }
       ]
     ],

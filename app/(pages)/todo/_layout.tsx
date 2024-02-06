@@ -29,7 +29,7 @@ export default function Page() {
         name="[id]"
         options={{ headerBackButtonMenuEnabled: true, headerBackVisible: true }}
       />
-      <Stack.Screen name="updateTask" />
+      <Stack.Screen name="addTodo" options={{ headerShown: false }} />
     </Stack>
   );
 }
